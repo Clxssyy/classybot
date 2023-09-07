@@ -14,7 +14,7 @@ module.exports = {
     .setDMPermission(false),
   async execute(interaction) {
     const member = interaction.options.getMember('user') ?? interaction.member;
-    const flags = member.user.flags.toArray();
+    const flags = member.user.flags.toArray().join(', ');
 
     await interaction.reply(
       `Username: ${member.user.username}\nJoined: <t:${Math.floor(

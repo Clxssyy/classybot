@@ -5,12 +5,13 @@ require('dotenv').config();
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 // for guild-based commands
-rest.put(
+rest
+  .put(
     Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID
+      process.env.CLIENT_ID,
+      process.env.GUILD_ID
     ),
     { body: [] }
-)
-    .then(() => console.log('Successfully deleted all guild commands.'))
-    .catch(console.error);
+  )
+  .then(() => console.log('Successfully deleted all guild commands.'))
+  .catch(console.error);

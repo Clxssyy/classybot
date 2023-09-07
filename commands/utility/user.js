@@ -1,4 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,12 +19,31 @@ module.exports = {
     .setDMPermission(false),
   async execute(interaction) {
     const member = interaction.options.getMember('user') ?? interaction.member;
-    const flags = member.user.flags.toArray().join(', ');
 
-    await interaction.reply(
-      `Username: ${member.user.username}\nJoined: <t:${Math.floor(
-        member.joinedTimestamp / 1000
-      )}:R> Flags: ${flags}`
-    );
+    if (member.user.flags.toArray().length === 0) {
+      var flags = 'None';
+    } else {
+      var flags = member.user.flags.toArray().join(', ');
+    }
+
+    const roles = member.roles.cache
+      .filter((role) => role.id !== interaction.guild.id)
+      .map((role) => role.toString())
+      .join(' | ');
+
+    const embed = await new EmbedBuilder()
+      .setColor(member.displayHexColor)
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+      .setTitle(member.user.username)
+      .addFields(
+        {
+          name: 'Joined',
+          value: `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>`,
+        },
+        { name: 'Roles', value: roles },
+        { name: 'Flags', value: flags }
+      );
+
+    await interaction.reply({ embeds: [embed] });
   },
 };

@@ -30,14 +30,14 @@ module.exports = {
 
     // Create profile picture attachment
     const attachment = new AttachmentBuilder(imageURL, {
-      name: `${username}-avatar.png`,
+      name: `avatar.png`,
     });
 
     // Create embed
     const embed = new EmbedBuilder()
       .setColor(0x6ab7dd)
       .setTitle(`${username}'s Profile Picture`)
-      .setImage(`attachment://${username}-avatar.png`);
+      .setImage(`attachment://avatar.png`);
 
     if (interaction.options.getUser('user')) {
       await interaction.reply({

@@ -21,6 +21,8 @@ module.exports = {
       subcommand.setName('features').setDescription('View the bots features.')
     ),
   async execute(interaction) {
+    await interaction.deferReply();
+
     const addBotButton = await new ButtonBuilder()
       .setLabel('Add Bot')
       .setURL(
@@ -52,7 +54,7 @@ module.exports = {
                     \n
                     \nServers using ClassyBot: ${interaction.client.guilds.cache.size}`
         );
-      await interaction.channel.send({
+      await interaction.editReply({
         embeds: [response],
         components: [row],
         files: [botPfp],
@@ -84,7 +86,7 @@ module.exports = {
                     \n
                     \nServers using ClassyBot: ${interaction.client.guilds.cache.size}`
         );
-      await interaction.channel.send({
+      await interaction.editReply({
         embeds: [response],
         components: [row],
         files: [botPfp],

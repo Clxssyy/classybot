@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,9 +15,6 @@ module.exports = {
   async execute(interaction) {
     try {
       const prompt = await interaction.options.getString('prompt');
-      const configuration = new Configuration({
-        apiKey: process.env.OPENAI_TOKEN,
-      });
 
       await interaction.reply(`Starting AI session with prompt: ${prompt}`);
       const conversation = [
@@ -32,8 +29,8 @@ module.exports = {
         return response.author.id === interaction.user.id;
       };
 
-      const openai = new OpenAIApi(configuration);
-      const response = await openai.createChatCompletion({
+      const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
+      const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: conversation,
         max_tokens: 1000,
@@ -41,7 +38,7 @@ module.exports = {
 
       await interaction
         .editReply({
-          content: `Session Started\nUser: ${interaction.user.username}\nPrompt: ${prompt}\nResponse: ${response.data.choices[0].message.content}`,
+          content: `Session Started\nUser: ${interaction.user.username}\nPrompt: ${prompt}\nResponse: ${response.choices[0].message.content}`,
           fetchReply: true,
         })
         .then(async (message) => {
@@ -61,7 +58,7 @@ module.exports = {
               content: message.content,
             });
 
-            const response = await openai.createChatCompletion({
+            const response = await openai.chat.completions.create({
               model: 'gpt-3.5-turbo',
               messages: conversation,
               max_tokens: 1000,
@@ -72,7 +69,7 @@ module.exports = {
               content: response.data.choices[0].message.content,
             });
 
-            await thread.send(response.data.choices[0].message.content);
+            await thread.send(response.choices[0].message.content);
           });
 
           collector.on('end', async (collected) => {

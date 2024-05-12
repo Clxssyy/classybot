@@ -93,12 +93,12 @@ module.exports = {
                 \nServers using ClassyBot: ${client.guilds.cache.size}`
       );
 
-    infoBotMessage.edit({
+    infoBotMessage && infoBotMessage.edit({
       embeds: [info],
       components: [row],
       files: [botPfp],
     });
-    featureBotMessage.edit({
+    featureBotMessage && featureBotMessage.edit({
       embeds: [feature],
       components: [row],
       files: [botPfp],

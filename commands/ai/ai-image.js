@@ -3,7 +3,7 @@ const {
   AttachmentBuilder,
   EmbedBuilder,
 } = require('discord.js');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 const path = require('path');
 const fs = require('fs');
 
@@ -23,9 +23,9 @@ module.exports = {
         .setDescription('Choose size of image.')
         .setRequired(true)
         .addChoices(
-          { name: 'small', value: '256x256' },
-          { name: 'medium', value: '512x512' },
-          { name: 'large', value: '1024x1024' }
+          { name: 'square', value: '1024x1024' },
+          { name: 'portrait', value: '1024x1792' },
+          { name: 'landscape', value: '1792x1024' }
         )
     ),
   async execute(interaction) {
@@ -47,18 +47,18 @@ module.exports = {
       }
 
       // OpenAI Image generation
-      const configuration = new Configuration({
-        apiKey: process.env.OPENAI_TOKEN,
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
       });
-      const openai = new OpenAIApi(configuration);
-      const response = await openai.createImage({
+      const response = await openai.images.generate({
         prompt: prompt,
         n: 1,
         size: interaction.options.getString('size'),
         response_format: 'b64_json',
+        model: 'dall-e-3',
       });
-      const imageData = response.data.data[0].b64_json;
-      const imageID = response.data.created;
+      const imageData = response.data[0].b64_json;
+      const imageID = response.created;
       const imageBuffer = Buffer.from(imageData, 'base64');
 
       // Save the image buffer to a file

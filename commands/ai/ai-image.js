@@ -47,7 +47,7 @@ module.exports = {
       }
 
       // OpenAI Image generation
-      const openai = new OpenAI({
+      const openai = new OpenAI.OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
       const response = await openai.images.generate({
